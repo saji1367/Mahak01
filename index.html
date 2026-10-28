@@ -123,6 +123,39 @@
     .modal p{margin:0 0 15px;font-size:12px;color:var(--muted)}
     .modal-actions{display:flex;gap:9px;margin-top:15px}
     .modal-actions .btn{flex:1}
+    /* Mahak visual refresh: calm color, friendly icons, and subtle motion */
+    :root{--peach:#fff0e5;--peach-ink:#b96b3e;--mint:#e3f5ef;--mint-ink:#347c69;--blue:#e7f0ff;--blue-ink:#456fc0;--rose:#ffe5ef;--rose-ink:#b64b7a;--sun:#fff4d8;--sun-ink:#a87618}
+    :root[data-theme="dark"]{--peach:#493126;--peach-ink:#ffc29c;--mint:#203d37;--mint-ink:#a5e4d1;--blue:#25344e;--blue-ink:#b8ceff;--rose:#482738;--rose-ink:#ffb5d2;--sun:#443921;--sun-ink:#ffdc8b}
+    .brand-mark,.about-mark{position:relative;overflow:hidden;background:linear-gradient(145deg,#a88ac8 0%,#79559b 58%,#563775 100%);box-shadow:0 8px 22px #76558f30}
+    .brand-mark:before,.about-mark:before{content:"";position:absolute;width:28px;height:28px;border:3px solid #fff;border-radius:50%;left:7px;top:5px;opacity:.95}
+    .brand-mark:after,.about-mark:after{content:"✦";position:absolute;color:#ffe5a8;font-size:15px;right:7px;bottom:4px}
+    .hero{background:radial-gradient(circle at 88% 12%,#d5b7f455 0 14%,transparent 15%),linear-gradient(135deg,#8866a7 0%,#76558f 52%,#5b4175 100%)}
+    .hero:before{border-color:#fff3}
+    .quick{border:1px solid var(--line);box-shadow:0 5px 14px #4a305b08}
+    .quick:nth-child(1){background:var(--lavender);color:var(--primary)}
+    .quick:nth-child(2){background:var(--peach);color:var(--peach-ink)}
+    .quick:nth-child(3){background:var(--mint);color:var(--mint-ink)}
+    .settings-card,.calendar-card,.note-card{transition:box-shadow .22s ease,transform .22s ease}
+    .settings-card:focus-within{box-shadow:0 12px 28px #76558f12}
+    .mood-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .mood{min-height:96px;border:1px solid transparent;border-radius:19px;padding:12px 6px;background:var(--mood-bg,var(--lavender));color:var(--mood-ink,var(--primary));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:12px;font-weight:800;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+    .mood span{width:38px;height:38px;border-radius:14px;background:#ffffff8c;display:grid;place-items:center;font-size:23px;box-shadow:0 3px 9px #4a305b0a}
+    .mood[data-mood="خوب"]{--mood-bg:var(--peach);--mood-ink:var(--peach-ink)}
+    .mood[data-mood="آرام"]{--mood-bg:var(--mint);--mood-ink:var(--mint-ink)}
+    .mood[data-mood="حساس"]{--mood-bg:var(--rose);--mood-ink:var(--rose-ink)}
+    .mood[data-mood="خسته"]{--mood-bg:var(--blue);--mood-ink:var(--blue-ink)}
+    .mood[data-mood="گرفته"]{--mood-bg:var(--lavender);--mood-ink:var(--primary)}
+    .mood[data-mood="پرانرژی"]{--mood-bg:var(--sun);--mood-ink:var(--sun-ink)}
+    .mood.selected,.mood[aria-pressed="true"]{border-color:var(--mood-ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--mood-ink) 16%,transparent);transform:translateY(-2px)}
+    .icon-btn,.quick,.nav-item,.chip,.day{transition:transform .18s ease,background .18s ease,color .18s ease,box-shadow .18s ease}
+    .icon-btn:active,.quick:active,.nav-item:active,.chip:active{transform:scale(.95)}
+    .btn{box-shadow:0 7px 16px #76558f20;transition:transform .18s ease,box-shadow .18s ease}
+    .btn:hover{box-shadow:0 10px 22px #76558f28}
+    .nav-item b{display:grid;place-items:center;min-height:26px}
+    .note-card{padding:15px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(135deg,var(--surface),var(--lavender))}
+    .about-card{background:radial-gradient(circle at 50% 0%,var(--lavender),var(--surface) 65%);overflow:hidden}
+    .about-mark{width:76px;height:76px;border-radius:25px;font-size:0}
+    @media(prefers-reduced-motion:no-preference){.hero{animation:hero-arrive .55s ease both}.view.active .settings-card,.view.active .about-card{animation:card-arrive .28s ease both}.mood:hover{transform:translateY(-2px)}@keyframes hero-arrive{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@keyframes card-arrive{from{opacity:.65;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}}
     @media(min-width:520px){body{padding:20px 0}.app{border-radius:30px;overflow:hidden;min-height:calc(100dvh - 40px);box-shadow:0 20px 60px #38254412}.bottom-nav{bottom:20px;border-radius:0 0 30px 30px}}
     @media(prefers-reduced-motion:no-preference){.quick,.btn,.day{transition:transform .12s ease,background .12s ease}.quick:active,.btn:active{transform:scale(.98)}}
   </style>
@@ -185,12 +218,12 @@
       <div class="settings-card">
         <div class="field"><label>امروز بیشتر چه حسی داری؟</label>
           <div class="mood-grid" id="moodChoices">
-            <button class="mood" data-mood="خوب"><span>😊</span>خوب</button>
-            <button class="mood" data-mood="آرام"><span>😌</span>آرام</button>
-            <button class="mood" data-mood="حساس"><span>🥹</span>حساس</button>
-            <button class="mood" data-mood="خسته"><span>😴</span>خسته</button>
-            <button class="mood" data-mood="گرفته"><span>🌧️</span>گرفته</button>
-            <button class="mood" data-mood="پرانرژی"><span>✨</span>پرانرژی</button>
+            <button class="mood" data-mood="خوب" aria-pressed="false"><span>☀️</span>خوب</button>
+            <button class="mood" data-mood="آرام" aria-pressed="false"><span>🌿</span>آرام</button>
+            <button class="mood" data-mood="حساس" aria-pressed="false"><span>🩷</span>حساس</button>
+            <button class="mood" data-mood="خسته" aria-pressed="false"><span>☁️</span>خسته</button>
+            <button class="mood" data-mood="گرفته" aria-pressed="false"><span>🌧️</span>گرفته</button>
+            <button class="mood" data-mood="پرانرژی" aria-pressed="false"><span>✨</span>پرانرژی</button>
           </div>
         </div>
         <div class="field"><label>علائم امروز (هرکدوم خواستی)</label>
@@ -230,7 +263,7 @@
       <div class="page-title">درباره ماهک</div>
       <p class="page-intro">ماهک، همراهی برای شناخت بهتر چرخه و توجه به حال خودت.</p>
       <div class="about-card">
-        <div class="about-mark">☾</div>
+        <div class="about-mark" aria-label="نشان ماهک"><svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true"><path d="M43 7a23 23 0 1 0 14 39A25 25 0 0 1 43 7Z" fill="none" stroke="white" stroke-width="4" stroke-linecap="round"/><path d="M20 48c2-12 11-19 21-20-1 11-7 19-21 20Z" fill="#d9f3e8"/><path d="M20 48c5-7 10-12 17-16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="49" cy="15" r="3" fill="#ffe5a8"/></svg></div>
         <h2>ماهک | دستیار چرخه تو</h2>
         <p>طراحی و توسعه داده شده با سجاد درویشی</p>
         <a class="about-link" href="https://www.SajadDarvishi.ir" target="_blank" rel="noopener noreferrer">www.SajadDarvishi.ir</a>
