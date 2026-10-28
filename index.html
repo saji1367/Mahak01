@@ -46,7 +46,12 @@
     .brand-sub{font-size:11px;color:var(--muted);margin-top:-5px}
     .top-actions{display:flex;align-items:center;gap:8px}
     .icon-btn{border:1px solid var(--line);background:var(--surface);border-radius:15px;width:42px;height:42px;display:grid;place-items:center;color:var(--primary);font-size:19px}
-    .theme-btn{font-size:20px}
+    .theme-btn{width:46px;height:46px;border-radius:17px;background:linear-gradient(145deg,var(--lavender),var(--surface));border:1px solid color-mix(in srgb,var(--primary) 20%,var(--line));box-shadow:0 5px 15px #76558f18;color:var(--primary);transition:transform .22s ease,box-shadow .22s ease}
+    .theme-btn .theme-glyph{font-size:23px;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+    .theme-btn:active .theme-glyph{transform:rotate(-22deg) scale(.86)}
+    .month-chips{display:grid;grid-auto-flow:column;grid-auto-columns:max-content;grid-template-rows:1fr;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;white-space:nowrap}
+    .month-chip{padding:8px 12px;min-width:54px;text-align:center}
+    .month-chip small{display:block;font-size:9px;font-weight:600;opacity:.8;margin-top:1px}
     .greeting{font-size:13px;color:var(--muted);margin:5px 2px 3px}
     h1{font-size:25px;line-height:1.45;margin:0 2px 18px;font-weight:800;letter-spacing:-.5px}
     .hero{position:relative;overflow:hidden;background:linear-gradient(145deg,#806096,#684a80);color:white;border-radius:28px;padding:23px 22px 20px;box-shadow:0 16px 34px #76558f30}
@@ -185,7 +190,7 @@
   <header class="topbar">
     <div class="brand"><div class="brand-mark">☾</div><div><div class="brand-name">ماهک</div><div class="brand-sub">دستیار چرخه تو</div></div></div>
     <div class="top-actions">
-      <button class="icon-btn theme-btn" id="themeToggleTop" aria-label="فعال‌سازی حالت تاریک" title="تغییر حالت روشن و تاریک">☾</button>
+      <button class="icon-btn theme-btn" id="themeToggleTop" aria-label="فعال‌سازی حالت تاریک" title="تغییر حالت روشن و تاریک"><span class="mi theme-glyph">dark_mode</span></button>
     </div>
   </header>
 
@@ -250,8 +255,7 @@
             <button class="chip" data-symptom="دل‌درد">دل‌درد</button><button class="chip" data-symptom="نفخ">نفخ</button><button class="chip" data-symptom="سردرد">سردرد</button><button class="chip" data-symptom="حساسیت سینه">حساسیت سینه</button><button class="chip" data-symptom="خستگی">خستگی</button><button class="chip" data-symptom="جوش">جوش</button>
           </div>
         </div>
-        <div class="field"><label for="moodNote">یادداشت (اختیاری)</label><textarea id="moodNote" rows="3" placeholder="هر چیزی که دوست داری برای خودت ثبت کنی…"></textarea></div>
-        <button class="btn" id="saveMood">ذخیره حال امروز</button>
+                <button class="btn" id="saveMood">ذخیره حال امروز</button>
       </div>
       <div class="mood-insight" id="moodInsight" aria-live="polite"><div class="insight-icon"><span class="mi">favorite</span></div><div><strong>پیام ماهک برای تو</strong><p>حس‌ها و علائمت رو انتخاب کن تا یک پیام دلگرم‌کننده و پیشنهاد کوچکی برای امروزت بگیری.</p></div></div>
       <div class="section-head"><h2>یادآوری</h2></div>
@@ -355,7 +359,8 @@
     document.documentElement.dataset.theme = theme;
     const toggle = $('themeToggleTop');
     if(toggle){
-      toggle.textContent = theme === 'dark' ? '☀' : '☾';
+      toggle.querySelector('.theme-glyph').textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+      toggle.style.transform='scale(.96)';setTimeout(()=>toggle.style.transform='',180);
       toggle.setAttribute('aria-label', theme === 'dark' ? 'فعال‌سازی حالت روشن' : 'فعال‌سازی حالت تاریک');
       toggle.title = theme === 'dark' ? 'تغییر به حالت روشن' : 'تغییر به حالت تاریک';
     }
@@ -409,6 +414,8 @@
         const displayId=pickerTarget+'Display';
         if($(displayId))$(displayId).value=faDate(d);
         closeDatePicker();
+        const nextField={lastPeriod:'periodStartDisplay',periodStart:'periodEndDisplay',periodEnd:'savePeriod'}[pickerTarget];
+        if(nextField){const target=$(nextField);if(target){setTimeout(()=>{target.scrollIntoView({behavior:'smooth',block:'center'});if(nextField!=='savePeriod')target.focus({preventScroll:true})},180)}}
       };
       box.appendChild(b);
     }
@@ -422,10 +429,13 @@
   function renderMonthChips(){
     const box=$('monthChips');if(!box)return;box.innerHTML='';
     const current=jalaliMonthStart(fullMonth);
-    for(let i=2;i>=0;i--){
-      const d=shiftJalaliMonth(jalaliMonthStart(now),-i);
-      const b=document.createElement('button');b.className='month-chip'+(jalaliParts(d).year===jalaliParts(current).year&&jalaliParts(d).month===jalaliParts(current).month?' active':'');
-      b.textContent=jalaliMonths[jalaliParts(d).month-1];b.onclick=()=>{fullMonth=d;renderCalendar('fullDays','fullMonthTitle',fullMonth);renderMonthChips()};box.appendChild(b);
+    const seen=new Set();
+    for(let i=5;i>=0;i--){
+      const d=shiftJalaliMonth(jalaliMonthStart(now),-i),p=jalaliParts(d),key=p.year+'-'+p.month;
+      if(seen.has(key))continue;seen.add(key);
+      const b=document.createElement('button');b.className='month-chip'+(p.year===jalaliParts(current).year&&p.month===jalaliParts(current).month?' active':'');
+      b.innerHTML=jalaliMonths[p.month-1]+(i>=0?'<small>'+faNum(String(p.year).slice(-2))+'</small>':'');
+      b.onclick=()=>{fullMonth=d;renderCalendar('fullDays','fullMonthTitle',fullMonth);renderMonthChips()};box.appendChild(b);
     }
   }
   function renderCalendar(containerId,titleId,month){
@@ -467,7 +477,7 @@
   $('cancelPeriod').onclick=closePeriodModal;$('savePeriod').onclick=savePeriod;
   $('periodModal').addEventListener('click',e=>{if(e.target===$('periodModal'))closePeriodModal()});
   $('saveSettings').onclick=()=>{state.lastPeriod=$('lastPeriod').value;state.cycleLength=Number($('cycleLength').value);state.periodLength=Number($('periodLength').value);state.reminderDays=Number($('reminderDays').value);saveState();toast('تنظیمات ذخیره شد.')};
-  document.querySelectorAll('[data-mood]').forEach(b=>b.onclick=()=>{selectedMood=b.dataset.mood;document.querySelectorAll('[data-mood]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b))});updateMoodInsight()});
+  document.querySelectorAll('[data-mood]').forEach(b=>b.onclick=()=>{selectedMood=b.dataset.mood;document.querySelectorAll('[data-mood]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b))});updateMoodInsight();const next=$('symptomChoices');if(next)setTimeout(()=>next.scrollIntoView({behavior:'smooth',block:'center'}),120)});
   document.querySelectorAll('[data-symptom]').forEach(b=>b.onclick=()=>{const s=b.dataset.symptom;if(selectedSymptoms.has(s))selectedSymptoms.delete(s);else selectedSymptoms.add(s);b.classList.toggle('selected',selectedSymptoms.has(s));b.setAttribute('aria-pressed',String(selectedSymptoms.has(s)));updateMoodInsight()});
   function updateMoodInsight(){
     const box=$('moodInsight');if(!box)return;
@@ -496,7 +506,7 @@
     const main=document.createElement('span');main.textContent=tip;box.querySelector('p').appendChild(main);
     if(tips.length){const extra=document.createElement('span');extra.className='suggestion';extra.textContent='پیشنهاد ماهک: '+tips.slice(0,2).join(' ');box.querySelector('p').appendChild(extra)}
   }
-  $('saveMood').onclick=()=>{state.logs=state.logs||{};state.logs[todayISO]={mood:selectedMood,symptoms:[...selectedSymptoms],note:$('moodNote').value};saveState();updateMoodInsight();toast('حال امروزت ذخیره شد ♡')};
+  $('saveMood').onclick=()=>{state.logs=state.logs||{};state.logs[todayISO]={mood:selectedMood,symptoms:[...selectedSymptoms]};saveState();updateMoodInsight();toast('حال امروزت ذخیره شد ♡')};
   $('exportData').onclick=downloadJSON;$('importButton').onclick=()=>$('importFile').click();
   $('importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!obj||typeof obj!=='object')throw Error();state={...defaultState,...obj};saveState();toast('نسخه پشتیبان بازیابی شد.')}catch(err){toast('فایل معتبر نیست.')}e.target.value=''};
   $('deleteData').onclick=resetAll;
