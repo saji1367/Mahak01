@@ -73,12 +73,21 @@
     .quick span{font-size:10px;color:var(--muted)}
     .q-lav{background:var(--lavender)} .q-pink{background:var(--pink)} .q-green{background:var(--green)}
     .calendar-card,.note-card,.settings-card{background:var(--surface);border:1px solid var(--line);border-radius:23px;padding:17px;box-shadow:0 5px 18px #4a305b05}
-    .month-chips{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 13px;scrollbar-width:none}
-    .month-chips::-webkit-scrollbar{display:none}
-    .month-chip{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;padding:7px 14px;background:var(--surface);color:var(--muted);font-size:12px;font-weight:700}
-    .month-chip.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 5px 14px #76558f30}
+    .calendar-card{background:linear-gradient(160deg,var(--surface),color-mix(in srgb,var(--lavender) 24%,var(--surface)));box-shadow:0 10px 26px #4a305b0b}
+    .month-chips{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;overflow:visible;padding:2px 0 14px;width:100%}
+    .month-chip{min-width:0;width:100%;border:1px solid var(--line);border-radius:14px;padding:7px 2px;background:var(--surface);color:var(--muted);font-size:11px;font-weight:800;line-height:1.45;white-space:normal;box-shadow:0 2px 7px #4a305b08;transition:background .2s,border-color .2s,transform .2s}
+    .month-chip small{display:block;font-size:10px;font-weight:700;opacity:.78;margin-top:1px}
+    .month-chip.active{background:linear-gradient(145deg,var(--primary),var(--primary-dark));color:#fff;border-color:var(--primary);box-shadow:0 5px 12px #76558f30}
+    .month-chip:active{transform:scale(.96)}
     .calendar-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-    .calendar-top strong{font-size:14px}
+    .calendar-top strong{font-size:15px;font-weight:800;letter-spacing:-.2px}
+    .weekdays{gap:5px;margin-bottom:4px}
+    .weekdays span{font-size:11px;font-weight:800;padding:5px 0 8px;color:var(--muted)}
+    .days{gap:5px}
+    .day{font-size:15px;font-weight:600;border-radius:13px;min-height:34px;transition:background .18s,transform .18s,box-shadow .18s}
+    .day:not(.empty):active{transform:scale(.92)}
+    .day.today{outline:2px solid var(--primary);outline-offset:-2px;font-weight:900;background:color-mix(in srgb,var(--lavender) 55%,transparent)}
+    .day.period,.day.predicted{box-shadow:0 2px 7px #4a305b0b}
     .month-nav{display:flex;gap:7px}
     .month-nav button{border:1px solid var(--line);background:var(--surface);color:var(--primary);border-radius:12px;width:36px;height:36px;display:grid;place-items:center}
     .calendar-fab{display:none;position:fixed;z-index:19;bottom:calc(94px + env(safe-area-inset-bottom));left:max(20px,calc(50% - 220px));border:0;border-radius:18px;background:linear-gradient(135deg,#9575b5,#76558f);color:#fff;box-shadow:0 9px 24px #76558f55;display:flex;align-items:center;gap:7px;padding:13px 17px;font-size:13px;font-weight:800;transition:transform .18s ease,box-shadow .18s ease}
@@ -265,6 +274,7 @@
     <section class="view" id="settingsView">
       <div class="page-title">تنظیمات</div><p class="page-intro">ماهک رو با نیازهای خودت هماهنگ کن.</p>
       <div class="settings-card">
+        <div class="field"><label for="userName">اسم کوچیکت</label><input id="userName" type="text" maxlength="30" autocomplete="given-name" placeholder="مثلاً مریم"></div>
         <div class="field"><label for="lastPeriodDisplay">اولین روز آخرین پریود (شمسی)</label><input id="lastPeriodDisplay" type="text" inputmode="none" placeholder="انتخاب تاریخ شمسی" readonly><input id="lastPeriod" type="hidden"></div>
         <div class="field"><label for="cycleLength">طول معمول چرخه (روز)</label><select id="cycleLength"></select></div>
         <div class="field"><label for="periodLength">مدت معمول پریود (روز)</label><select id="periodLength"></select></div>
@@ -332,7 +342,7 @@
   const STORAGE_KEY = 'maahak-v1';
   const now = new Date(); now.setHours(12,0,0,0);
   const todayISO = iso(now);
-  const defaultState = {lastPeriod:'', cycleLength:28, periodLength:5, reminderDays:3, periods:[], logs:{}};
+  const defaultState = {name:'', lastPeriod:'', cycleLength:28, periodLength:5, reminderDays:3, periods:[], logs:{}};
   let state = loadState();
   let homeMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   let fullMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -434,7 +444,7 @@
       const d=shiftJalaliMonth(jalaliMonthStart(now),-i),p=jalaliParts(d),key=p.year+'-'+p.month;
       if(seen.has(key))continue;seen.add(key);
       const b=document.createElement('button');b.className='month-chip'+(p.year===jalaliParts(current).year&&p.month===jalaliParts(current).month?' active':'');
-      b.innerHTML=jalaliMonths[p.month-1]+(i>=0?'<small>'+faNum(String(p.year).slice(-2))+'</small>':'');
+      b.innerHTML=jalaliMonths[p.month-1]+'<small>'+faNum(String(p.year).slice(-2))+'</small>';
       b.onclick=()=>{fullMonth=d;renderCalendar('fullDays','fullMonthTitle',fullMonth);renderMonthChips()};box.appendChild(b);
     }
   }
@@ -455,8 +465,8 @@
       container.appendChild(b);
     }
   }
-  function renderHome(){const starts=recordedStarts();$('todayGreeting').textContent=`امروز ${faDate(now,{weekday:'long',day:'numeric',month:'long'})} ـه 🌷`;const next=predictedStarts()[0];if(!starts.length){$('heroLabel').textContent='شروع مسیر شناخت چرخه';$('heroCount').innerHTML='سلام <small>به ماهک</small>';$('heroDate').textContent='تاریخ شروع آخرین پریودت رو ثبت کن';$('cycleInfo').textContent='تنظیم چند مورد ساده برای شروع';}else{const diff=diffDays(next,now);$('heroLabel').textContent=diff>0?'تا پریود احتمالی بعدی':diff===0?'پریود احتمالی امروز':'از تاریخ احتمالی گذشته';$('heroCount').innerHTML=`${faNum(Math.abs(diff))} <small>${diff>0?'روز باقی‌مونده':diff===0?'تا امروز':'روز گذشته'}</small>`;$('heroDate').textContent=`حدود ${faDate(next,{day:'numeric',month:'long'})}`;$('cycleInfo').textContent=`چرخه تنظیم‌شده: ${faNum(state.cycleLength)} روز`;}renderCalendar('homeDays','homeMonthTitle',homeMonth);renderCalendar('fullDays','fullMonthTitle',fullMonth)}
-  function renderSettings(){ $('lastPeriod').value=state.lastPeriod||'';$('lastPeriodDisplay').value=state.lastPeriod?faDate(parseISO(state.lastPeriod)):'';$('cycleLength').innerHTML='';for(let i=21;i<=40;i++){const o=document.createElement('option');o.value=i;o.textContent=faNum(i)+' روز';if(i===Number(state.cycleLength))o.selected=true;$('cycleLength').appendChild(o)}$('periodLength').innerHTML='';for(let i=1;i<=10;i++){const o=document.createElement('option');o.value=i;o.textContent=faNum(i)+' روز';if(i===Number(state.periodLength))o.selected=true;$('periodLength').appendChild(o)}$('reminderDays').value=String(state.reminderDays??3)}
+  function renderHome(){const starts=recordedStarts();const personName=String(state.name||'').trim();$('todayGreeting').textContent=personName?`سلام ${personName} جان 🌷`:`سلام، روزت بخیر 🌷`;const next=predictedStarts()[0];if(!starts.length){$('heroLabel').textContent='شروع مسیر شناخت چرخه';$('heroCount').innerHTML='سلام <small>به ماهک</small>';$('heroDate').textContent='تاریخ شروع آخرین پریودت رو ثبت کن';$('cycleInfo').textContent='تنظیم چند مورد ساده برای شروع';}else{const diff=diffDays(next,now);$('heroLabel').textContent=diff>0?'تا پریود احتمالی بعدی':diff===0?'پریود احتمالی امروز':'از تاریخ احتمالی گذشته';$('heroCount').innerHTML=`${faNum(Math.abs(diff))} <small>${diff>0?'روز باقی‌مونده':diff===0?'تا امروز':'روز گذشته'}</small>`;$('heroDate').textContent=`حدود ${faDate(next,{day:'numeric',month:'long'})}`;$('cycleInfo').textContent=`چرخه تنظیم‌شده: ${faNum(state.cycleLength)} روز`;}renderCalendar('homeDays','homeMonthTitle',homeMonth);renderCalendar('fullDays','fullMonthTitle',fullMonth)}
+  function renderSettings(){ $('userName').value=state.name||'';$('lastPeriod').value=state.lastPeriod||'';$('lastPeriodDisplay').value=state.lastPeriod?faDate(parseISO(state.lastPeriod)):'';$('cycleLength').innerHTML='';for(let i=21;i<=40;i++){const o=document.createElement('option');o.value=i;o.textContent=faNum(i)+' روز';if(i===Number(state.cycleLength))o.selected=true;$('cycleLength').appendChild(o)}$('periodLength').innerHTML='';for(let i=1;i<=10;i++){const o=document.createElement('option');o.value=i;o.textContent=faNum(i)+' روز';if(i===Number(state.periodLength))o.selected=true;$('periodLength').appendChild(o)}$('reminderDays').value=String(state.reminderDays??3)}
   function render(){renderHome();renderSettings()}
   function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.display='none',2800)}
   function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$('calendarLog').style.display=id==='calendarView'?'flex':'none';window.scrollTo({top:0,behavior:'smooth'});if(id==='calendarView')renderCalendar('fullDays','fullMonthTitle',fullMonth)}
@@ -476,7 +486,7 @@
   $('fullNext').onclick=()=>{fullMonth=shiftJalaliMonth(fullMonth,1);renderCalendar('fullDays','fullMonthTitle',fullMonth)};
   $('cancelPeriod').onclick=closePeriodModal;$('savePeriod').onclick=savePeriod;
   $('periodModal').addEventListener('click',e=>{if(e.target===$('periodModal'))closePeriodModal()});
-  $('saveSettings').onclick=()=>{state.lastPeriod=$('lastPeriod').value;state.cycleLength=Number($('cycleLength').value);state.periodLength=Number($('periodLength').value);state.reminderDays=Number($('reminderDays').value);saveState();toast('تنظیمات ذخیره شد.')};
+  $('saveSettings').onclick=()=>{state.name=$('userName').value.trim().slice(0,30);state.lastPeriod=$('lastPeriod').value;state.cycleLength=Number($('cycleLength').value);state.periodLength=Number($('periodLength').value);state.reminderDays=Number($('reminderDays').value);saveState();toast('تنظیمات ذخیره شد.')};
   document.querySelectorAll('[data-mood]').forEach(b=>b.onclick=()=>{selectedMood=b.dataset.mood;document.querySelectorAll('[data-mood]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b))});updateMoodInsight();const next=$('symptomChoices');if(next)setTimeout(()=>next.scrollIntoView({behavior:'smooth',block:'center'}),120)});
   document.querySelectorAll('[data-symptom]').forEach(b=>b.onclick=()=>{const s=b.dataset.symptom;if(selectedSymptoms.has(s))selectedSymptoms.delete(s);else selectedSymptoms.add(s);b.classList.toggle('selected',selectedSymptoms.has(s));b.setAttribute('aria-pressed',String(selectedSymptoms.has(s)));updateMoodInsight()});
   function updateMoodInsight(){
