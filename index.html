@@ -42,7 +42,9 @@
     .brand-mark{width:42px;height:42px;border-radius:15px;background:linear-gradient(145deg,#9273a9,#6c4c83);display:grid;place-items:center;color:#fff;font-size:23px;box-shadow:0 7px 18px #76558f33}
     .brand-name{font-size:20px;font-weight:800;letter-spacing:-.4px}
     .brand-sub{font-size:11px;color:var(--muted);margin-top:-5px}
+    .top-actions{display:flex;align-items:center;gap:8px}
     .icon-btn{border:1px solid var(--line);background:var(--surface);border-radius:15px;width:42px;height:42px;display:grid;place-items:center;color:var(--primary);font-size:19px}
+    .theme-btn{font-size:20px}
     .greeting{font-size:13px;color:var(--muted);margin:5px 2px 3px}
     h1{font-size:25px;line-height:1.45;margin:0 2px 18px;font-weight:800;letter-spacing:-.5px}
     .hero{position:relative;overflow:hidden;background:linear-gradient(145deg,#806096,#684a80);color:white;border-radius:28px;padding:23px 22px 20px;box-shadow:0 16px 34px #76558f30}
@@ -83,10 +85,15 @@
     .note-icon{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:var(--pink);color:#b65d75;flex-shrink:0;font-size:20px}
     .note-card strong{font-size:13px;display:block;margin-bottom:2px}
     .note-card p{font-size:11px;color:var(--muted);margin:0}
-    .bottom-nav{position:fixed;z-index:5;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);padding:10px 17px calc(10px + env(safe-area-inset-bottom));background:var(--surface)fffed;backdrop-filter:blur(18px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-    .nav-item{border:0;background:transparent;color:#9a91a1;border-radius:15px;padding:7px 2px 5px;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px}
-    .nav-item b{font-size:20px;line-height:1.3;font-weight:500}
+    .bottom-nav{position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:var(--nav-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line);box-shadow:0 -8px 28px rgba(45,32,55,.12);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+    .nav-item{border:0;background:transparent;color:var(--muted);border-radius:15px;padding:7px 1px 5px;font-size:12px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:2px;white-space:nowrap}
+    .nav-item b{font-size:21px;line-height:1.3;font-weight:800}
     .nav-item.active{color:var(--primary);background:var(--lavender);font-weight:800}
+    .about-card{background:var(--surface);border:1px solid var(--line);border-radius:23px;padding:22px;text-align:center;box-shadow:var(--shadow)}
+    .about-mark{width:66px;height:66px;border-radius:22px;margin:0 auto 12px;display:grid;place-items:center;background:linear-gradient(145deg,#9273a9,#6c4c83);color:#fff;font-size:34px}
+    .about-card h2{font-size:18px;margin:0 0 8px}
+    .about-card p{font-size:13px;color:var(--muted);margin:0 0 14px}
+    .about-link{display:inline-block;color:var(--primary);font-size:13px;font-weight:800;text-decoration:none;direction:ltr}
     .view{display:none}.view.active{display:block}
     .page-title{font-size:23px;font-weight:800;margin:9px 0 4px}
     .page-intro{font-size:12px;color:var(--muted);margin:0 0 18px}
@@ -124,7 +131,10 @@
 <div class="app">
   <header class="topbar">
     <div class="brand"><div class="brand-mark">☾</div><div><div class="brand-name">ماهک</div><div class="brand-sub">دستیار چرخه تو</div></div></div>
-    <button class="icon-btn" id="settingsShortcut" aria-label="تنظیمات">⚙</button>
+    <div class="top-actions">
+      <button class="icon-btn theme-btn" id="themeToggleTop" aria-label="فعال‌سازی حالت تاریک" title="تغییر حالت روشن و تاریک">☾</button>
+      <button class="icon-btn" id="settingsShortcut" aria-label="تنظیمات">⚙</button>
+    </div>
   </header>
 
   <main>
@@ -202,7 +212,6 @@
         <div class="field"><label for="cycleLength">طول معمول چرخه (روز)</label><select id="cycleLength"></select></div>
         <div class="field"><label for="periodLength">مدت معمول پریود (روز)</label><select id="periodLength"></select></div>
         <div class="field"><label for="reminderDays">یادآوری قبل از تاریخ احتمالی</label><select id="reminderDays"><option value="0">خاموش</option><option value="1">یک روز قبل</option><option value="3">سه روز قبل</option><option value="5">پنج روز قبل</option></select></div>
-        <div class="privacy-row"><span>حالت تاریک</span><label style="display:flex;align-items:center;gap:8px"><span class="small-muted" id="themeLabel">روشن</span><input class="switch" type="checkbox" id="themeToggle" aria-label="فعال‌سازی حالت تاریک"></label></div>
         <div class="privacy-row"><span>قفل صفحه (در نسخه وب به‌صورت نمایشی)</span><input class="switch" type="checkbox" id="privacyToggle" disabled aria-label="قفل صفحه"></div>
         <p class="small-muted">قفل زیستی به قابلیت‌های بومی نیاز دارد؛ در این نسخه فعال نیست.</p>
         <button class="btn" id="saveSettings">ذخیره تنظیمات</button>
@@ -215,10 +224,17 @@
         <button class="btn secondary" id="importButton">بازیابی نسخه پشتیبان</button><input type="file" id="importFile" accept="application/json" hidden>
         <div style="height:9px"></div><button class="btn danger" id="deleteData">حذف همه اطلاعات</button>
       </div>
-      <footer class="app-footer" style="text-align:center;margin:28px 0 12px;padding:18px 8px 8px;border-top:1px solid var(--line)">
-        <div class="small-muted">طراحی و توسعه داده شده توسط سجاد درویشی · نسخه ۱.۰۱</div>
-        <a href="https://www.sajaddarvishi.ir" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:5px;color:var(--primary);font-size:11px;text-decoration:none">www.sajaddarvishi.ir</a>
-      </footer>
+    </section>
+
+    <section class="view" id="aboutView">
+      <div class="page-title">درباره ماهک</div>
+      <p class="page-intro">ماهک، همراهی برای شناخت بهتر چرخه و توجه به حال خودت.</p>
+      <div class="about-card">
+        <div class="about-mark">☾</div>
+        <h2>ماهک | دستیار چرخه تو</h2>
+        <p>طراحی و توسعه داده شده با سجاد درویشی</p>
+        <a class="about-link" href="https://www.SajadDarvishi.ir" target="_blank" rel="noopener noreferrer">www.SajadDarvishi.ir</a>
+      </div>
     </section>
   </main>
 
@@ -227,6 +243,7 @@
     <button class="nav-item" data-view="calendarView"><b>▦</b>تقویم</button>
     <button class="nav-item" data-view="moodView"><b>♡</b>حال من</button>
     <button class="nav-item" data-view="settingsView"><b>⚙</b>تنظیمات</button>
+    <button class="nav-item" data-view="aboutView"><b>ⓘ</b>درباره ما</button>
   </nav>
 </div>
 
@@ -283,17 +300,19 @@
   // Theme preference is stored locally and follows the user's choice.
   function applyTheme(theme){
     document.documentElement.dataset.theme = theme;
-    const toggle = $('themeToggle');
-    if(toggle) toggle.checked = theme === 'dark';
-    const label = $('themeLabel');
-    if(label) label.textContent = theme === 'dark' ? 'تاریک' : 'روشن';
+    const toggle = $('themeToggleTop');
+    if(toggle){
+      toggle.textContent = theme === 'dark' ? '☀' : '☾';
+      toggle.setAttribute('aria-label', theme === 'dark' ? 'فعال‌سازی حالت روشن' : 'فعال‌سازی حالت تاریک');
+      toggle.title = theme === 'dark' ? 'تغییر به حالت روشن' : 'تغییر به حالت تاریک';
+    }
     const meta = document.querySelector('meta[name="theme-color"]');
     if(meta) meta.content = theme === 'dark' ? '#17131c' : '#76558f';
   }
   function savedTheme(){try{return localStorage.getItem('maahak-theme') || 'light'}catch(e){return 'light'}}
   applyTheme(savedTheme());
-  $('themeToggle').addEventListener('change', e=>{
-    const theme = e.target.checked ? 'dark' : 'light';
+  $('themeToggleTop').addEventListener('click',()=>{
+    const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     try{localStorage.setItem('maahak-theme',theme)}catch(err){}
     applyTheme(theme);
   });
