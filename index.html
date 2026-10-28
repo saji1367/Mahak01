@@ -464,15 +464,22 @@
 
   function renderMonthChips(){
     const box=$('monthChips');if(!box)return;box.innerHTML='';
-    const current=jalaliMonthStart(fullMonth);
-    const seen=new Set();
+    const current=jalaliParts(jalaliMonthStart(fullMonth));
+    const today=jalaliMonthStart(now);
+    const months=[];
     for(let i=5;i>=0;i--){
-      const d=shiftJalaliMonth(jalaliMonthStart(now),-i),p=jalaliParts(d),key=p.year+'-'+p.month;
-      if(seen.has(key))continue;seen.add(key);
-      const b=document.createElement('button');b.className='month-chip'+(p.year===jalaliParts(current).year&&p.month===jalaliParts(current).month?' active':'');
-      b.innerHTML=jalaliMonths[p.month-1]+'<small>'+faNum(String(p.year).slice(-2))+'</small>';
-      b.onclick=()=>{fullMonth=d;renderCalendar('fullDays','fullMonthTitle',fullMonth);renderMonthChips()};box.appendChild(b);
+      const d=shiftJalaliMonth(today,-i),p=jalaliParts(d),key=p.year+'-'+p.month;
+      if(!months.some(m=>m.key===key))months.push({d,p,key});
     }
+    months.forEach(({d,p})=>{
+      const b=document.createElement('button');
+      b.type='button';
+      b.className='month-chip'+(p.year===current.year&&p.month===current.month?' active':'');
+      b.setAttribute('aria-pressed',String(p.year===current.year&&p.month===current.month));
+      b.innerHTML=jalaliMonths[p.month-1]+'<small>'+faNum(String(p.year).slice(-2))+'</small>';
+      b.onclick=()=>{fullMonth=d;renderCalendar('fullDays','fullMonthTitle',fullMonth);renderMonthChips()};
+      box.appendChild(b);
+    });
   }
   function renderCalendar(containerId,titleId,month){
     $(titleId).textContent=jalaliMonthTitle(month);
