@@ -105,8 +105,8 @@
     @media(max-width:380px){.calendar-fab{left:14px;padding:11px 13px}.nav-item{font-size:10px}}
 
     .weekdays,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
-    .weekdays span{font-size:10px;color:var(--muted);padding:4px 0 8px}
-    .day{border:0;background:transparent;border-radius:11px;aspect-ratio:1/1;display:grid;place-items:center;font-size:12px;color:var(--ink);position:relative}
+    .weekdays span{font-size:11px;font-weight:800;color:var(--muted);padding:5px 0 8px}
+    .day{border:0;background:transparent;border-radius:13px;aspect-ratio:1/1;min-height:34px;display:grid;place-items:center;font-size:15px;font-weight:600;color:var(--ink);position:relative;transition:background .18s,transform .18s,box-shadow .18s}
     .day.empty{pointer-events:none}
     .day.period{background:var(--pink);color:var(--pink-ink);font-weight:800}
     .day.predicted{background:var(--lavender);color:var(--primary);font-weight:700}
