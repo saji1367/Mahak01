@@ -57,11 +57,24 @@
     .hero{position:relative;overflow:hidden;background:linear-gradient(145deg,#806096,#684a80);color:white;border-radius:28px;padding:23px 22px 20px;box-shadow:0 16px 34px #76558f30}
     .hero:before{content:"";position:absolute;width:190px;height:190px;border:1px solid #ffffff26;border-radius:50%;left:-64px;top:-85px}
     .hero:after{content:"";position:absolute;width:135px;height:135px;border:1px solid #ffffff1c;border-radius:50%;left:-36px;top:-58px}
+    .hero-layout{display:flex;align-items:center;justify-content:space-between;gap:14px;direction:rtl}
+    .hero-main{flex:1;min-width:0}
     .hero-label{font-size:13px;color:#f0e8f5}
     .hero-count{font-size:46px;line-height:1.25;font-weight:800;margin:8px 0 0;letter-spacing:-1px}
     .hero-count small{font-size:17px;font-weight:500;letter-spacing:0}
     .hero-date{font-size:13px;color:#eee4f3;margin-top:7px}
-    .cycle-gauge{display:flex;align-items:center;gap:15px;margin-top:18px;padding:13px 15px;border:1px solid #ffffff26;border-radius:22px;background:linear-gradient(115deg,#ffffff13,#ffffff08);backdrop-filter:blur(8px)}
+    .cycle-gauge{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:0 0 118px;width:118px;min-height:118px;margin:0;padding:8px 6px;border:1px solid #ffffff26;border-radius:22px;background:linear-gradient(115deg,#ffffff13,#ffffff08);backdrop-filter:blur(8px)}
+    .gauge-ring{width:72px;height:72px;flex:0 0 72px;position:relative;display:grid;place-items:center}
+    .gauge-ring svg{width:72px;height:72px;transform:rotate(-90deg);overflow:visible}
+    .gauge-track,.gauge-value{fill:none;stroke-width:7;stroke-linecap:round}
+    .gauge-track{stroke:#ffffff2b}
+    .gauge-value{stroke:#f6d9e8;stroke-dasharray:226.2;stroke-dashoffset:226.2;transition:stroke-dashoffset .8s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 1px 3px #ffffff30)}
+    .gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2}
+    .gauge-center strong{font-size:19px;font-weight:800;letter-spacing:-.5px}
+    .gauge-center span{font-size:9px;color:#f0e8f5;margin-top:3px}
+    .gauge-copy{min-width:0;flex:0 1 auto;text-align:center}
+    .gauge-copy strong{display:block;font-size:10px;font-weight:800;margin-bottom:0}
+    .gauge-copy p,.gauge-copy .gauge-caption{display:none}
     .gauge-ring{width:88px;height:88px;flex:0 0 88px;position:relative;display:grid;place-items:center}
     .gauge-ring svg{width:88px;height:88px;transform:rotate(-90deg);overflow:visible}
     .gauge-track,.gauge-value{fill:none;stroke-width:7;stroke-linecap:round}
@@ -74,7 +87,7 @@
     .gauge-copy strong{display:block;font-size:13px;font-weight:800;margin-bottom:4px}
     .gauge-copy p{font-size:11px;color:#f0e8f5;line-height:1.8;margin:0}
     .gauge-copy .gauge-caption{display:inline-flex;margin-top:7px;padding:4px 9px;border-radius:999px;background:#ffffff18;font-size:10px;font-weight:700;color:#fff}
-    @media(max-width:360px){.cycle-gauge{gap:10px;padding:11px}.gauge-ring,.gauge-ring svg{width:78px;height:78px}.gauge-ring{flex-basis:78px}.gauge-center strong{font-size:21px}}
+    @media(max-width:360px){.hero-layout{gap:8px}.hero-count{font-size:39px}.cycle-gauge{flex-basis:100px;width:100px;min-height:108px}.gauge-ring,.gauge-ring svg{width:64px;height:64px}.gauge-ring{flex-basis:64px}.gauge-center strong{font-size:17px}}
     .hero-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:21px;padding-top:15px;border-top:1px solid #ffffff29;font-size:12px;color:#f3eaf7}
     .hero-action{border:0;background:var(--surface);color:var(--primary-dark);font-weight:700;font-size:12px;border-radius:13px;padding:9px 12px;white-space:nowrap}
     .section-head{display:flex;align-items:center;justify-content:space-between;margin:24px 2px 12px}
@@ -222,15 +235,19 @@
       <div class="greeting" id="todayGreeting">سلام، روزت بخیر 🌷</div>
       <h1>حواست به خودت باشه</h1>
       <div class="hero">
-        <div class="hero-label" id="heroLabel">تا پریود احتمالی بعدی</div>
-        <div class="hero-count" id="heroCount">— <small>روز</small></div>
-        <div class="hero-date" id="heroDate">برای شروع، آخرین پریودت رو ثبت کن</div>
-        <div class="cycle-gauge" id="cycleGauge" hidden aria-label="نمایش پیشرفت چرخه">
-          <div class="gauge-ring">
-            <svg viewBox="0 0 84 84" aria-hidden="true"><circle class="gauge-track" cx="42" cy="42" r="36"></circle><circle class="gauge-value" id="gaugeProgress" cx="42" cy="42" r="36"></circle></svg>
-            <div class="gauge-center"><strong id="gaugePercent">۰٪</strong><span>از چرخه</span></div>
+        <div class="hero-layout">
+          <div class="hero-main">
+            <div class="hero-label" id="heroLabel">تا پریود احتمالی بعدی</div>
+            <div class="hero-count" id="heroCount">— <small>روز</small></div>
+            <div class="hero-date" id="heroDate">برای شروع، آخرین پریودت رو ثبت کن</div>
           </div>
-          <div class="gauge-copy"><strong id="gaugeTitle">چرخه‌ات در جریان است</strong><p id="gaugeDescription">ماهک همراهته تا الگوی بدنت رو بهتر بشناسی.</p><span class="gauge-caption" id="gaugeCaption">پیشرفت چرخه</span></div>
+          <div class="cycle-gauge" id="cycleGauge" hidden aria-label="نمایش پیشرفت چرخه">
+            <div class="gauge-ring">
+              <svg viewBox="0 0 84 84" aria-hidden="true"><circle class="gauge-track" cx="42" cy="42" r="36"></circle><circle class="gauge-value" id="gaugeProgress" cx="42" cy="42" r="36"></circle></svg>
+              <div class="gauge-center"><strong id="gaugePercent">۰٪</strong><span>از چرخه</span></div>
+            </div>
+            <div class="gauge-copy"><strong id="gaugeTitle">چرخه‌ات در جریان است</strong><p id="gaugeDescription">ماهک همراهته تا الگوی بدنت رو بهتر بشناسی.</p><span class="gauge-caption" id="gaugeCaption">پیشرفت چرخه</span></div>
+          </div>
         </div>
         <div class="hero-bottom"><span id="cycleInfo">هر چرخه، فرصتی برای شناخت بیشتر خودت</span><button class="hero-action" id="logPeriodHero">ثبت پریود +</button></div>
       </div>
