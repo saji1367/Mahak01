@@ -14,6 +14,8 @@
   <title>ماهک | دستیار چرخه تو</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,1,0&display=swap');
+    .mi{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;font-size:23px;line-height:1;display:inline-flex;align-items:center;justify-content:center;direction:ltr;font-feature-settings:'liga';-webkit-font-smoothing:antialiased;}
     :root {
       color-scheme: light;
       --bg:#f8f5fa; --surface:#fff; --ink:#2d2634; --muted:#82798b;
@@ -66,10 +68,28 @@
     .quick span{font-size:10px;color:var(--muted)}
     .q-lav{background:var(--lavender)} .q-pink{background:var(--pink)} .q-green{background:var(--green)}
     .calendar-card,.note-card,.settings-card{background:var(--surface);border:1px solid var(--line);border-radius:23px;padding:17px;box-shadow:0 5px 18px #4a305b05}
+    .month-chips{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 13px;scrollbar-width:none}
+    .month-chips::-webkit-scrollbar{display:none}
+    .month-chip{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;padding:7px 14px;background:var(--surface);color:var(--muted);font-size:12px;font-weight:700}
+    .month-chip.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 5px 14px #76558f30}
     .calendar-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
     .calendar-top strong{font-size:14px}
     .month-nav{display:flex;gap:7px}
-    .month-nav button{border:1px solid var(--line);background:var(--surface);color:var(--primary);border-radius:10px;width:31px;height:31px;font-size:17px}
+    .month-nav button{border:1px solid var(--line);background:var(--surface);color:var(--primary);border-radius:12px;width:36px;height:36px;display:grid;place-items:center}
+    .calendar-fab{position:fixed;z-index:19;bottom:calc(94px + env(safe-area-inset-bottom));left:max(20px,calc(50% - 220px));border:0;border-radius:18px;background:linear-gradient(135deg,#9575b5,#76558f);color:#fff;box-shadow:0 9px 24px #76558f55;display:flex;align-items:center;gap:7px;padding:13px 17px;font-size:13px;font-weight:800;transition:transform .18s ease,box-shadow .18s ease}
+    .calendar-fab .mi{font-size:24px}
+    .calendar-fab:active{transform:scale(.96)}
+    .mood-insight{display:flex;gap:13px;align-items:flex-start;margin-top:16px;padding:17px;border-radius:22px;background:linear-gradient(135deg,var(--lavender),var(--mint));border:1px solid var(--line)}
+    .insight-icon{width:42px;height:42px;flex-shrink:0;border-radius:15px;background:var(--surface);color:var(--primary);display:grid;place-items:center}
+    .mood-insight strong{display:block;font-size:13px;margin:0 0 5px}
+    .mood-insight p{font-size:12px;color:var(--ink);line-height:1.9;margin:0}
+    .mood-insight .suggestion{display:block;margin-top:7px;font-weight:700;color:var(--primary-dark)}
+    .bottom-nav{border:1px solid var(--line);border-radius:25px 25px 0 0;padding:8px 9px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -8px 32px rgba(45,32,55,.10)}
+    .nav-item{border-radius:17px;gap:4px;padding:8px 1px 6px;font-size:11px}
+    .nav-item .mi{font-size:23px}
+    .nav-item.active{background:var(--lavender);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--primary) 12%,transparent)}
+    @media(max-width:380px){.calendar-fab{left:14px;padding:11px 13px}.nav-item{font-size:10px}}
+
     .weekdays,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
     .weekdays span{font-size:10px;color:var(--muted);padding:4px 0 8px}
     .day{border:0;background:transparent;border-radius:11px;aspect-ratio:1/1;display:grid;place-items:center;font-size:12px;color:var(--ink);position:relative}
@@ -166,7 +186,6 @@
     <div class="brand"><div class="brand-mark">☾</div><div><div class="brand-name">ماهک</div><div class="brand-sub">دستیار چرخه تو</div></div></div>
     <div class="top-actions">
       <button class="icon-btn theme-btn" id="themeToggleTop" aria-label="فعال‌سازی حالت تاریک" title="تغییر حالت روشن و تاریک">☾</button>
-      <button class="icon-btn" id="settingsShortcut" aria-label="تنظیمات">⚙</button>
     </div>
   </header>
 
@@ -203,13 +222,13 @@
     <section class="view" id="calendarView">
       <div class="page-title">تقویم من</div><p class="page-intro">روزهای ثبت‌شده و پیش‌بینی چرخه‌ات رو ببین.</p>
       <div class="calendar-card">
-        <div class="calendar-top"><strong id="fullMonthTitle"></strong><div class="month-nav"><button id="fullPrev" aria-label="ماه قبل">‹</button><button id="fullNext" aria-label="ماه بعد">›</button></div></div>
+        <div class="month-chips" id="monthChips" aria-label="انتخاب ماه"></div>
+        <div class="calendar-top"><strong id="fullMonthTitle"></strong><div class="month-nav"><button id="fullPrev" aria-label="ماه قبل"><span class="mi">chevron_right</span></button><button id="fullNext" aria-label="ماه بعد"><span class="mi">chevron_left</span></button></div></div>
         <div class="weekdays"><span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span></div>
         <div class="days" id="fullDays"></div>
         <div class="legend"><span><i class="dot" style="background:#e9a9b7"></i>پریود ثبت‌شده</span><span><i class="dot" style="background:#c9b4dc"></i>پریود احتمالی</span></div>
       </div>
-      <div class="section-head"><h2>ثبت جدید</h2></div>
-      <button class="btn" id="calendarLog">ثبت شروع پریود</button>
+      <button class="calendar-fab" id="calendarLog" aria-label="ثبت شروع پریود" title="ثبت شروع پریود"><span class="mi">add</span><span>ثبت پریود</span></button>
       <p class="small-muted" style="margin-top:12px">پیش‌بینی چرخه، ابزار تقریبی برای پیگیری شخصی است و کاربرد تشخیصی یا پیشگیری از بارداری ندارد.</p>
     </section>
 
@@ -234,6 +253,7 @@
         <div class="field"><label for="moodNote">یادداشت (اختیاری)</label><textarea id="moodNote" rows="3" placeholder="هر چیزی که دوست داری برای خودت ثبت کنی…"></textarea></div>
         <button class="btn" id="saveMood">ذخیره حال امروز</button>
       </div>
+      <div class="mood-insight" id="moodInsight" aria-live="polite"><div class="insight-icon"><span class="mi">favorite</span></div><div><strong>پیام ماهک برای تو</strong><p>حس‌ها و علائمت رو انتخاب کن تا یک پیام دلگرم‌کننده و پیشنهاد کوچکی برای امروزت بگیری.</p></div></div>
       <div class="section-head"><h2>یادآوری</h2></div>
       <div class="note-card"><div class="note-icon">✦</div><div><strong>بدنت رو با بدن خودت مقایسه کن</strong><p>تغییرات خلق‌وخو و علائم از فردی به فرد دیگه متفاوته. ثبت‌ها برای شناخت الگوی شخصی خودته.</p></div></div>
     </section>
@@ -272,11 +292,11 @@
   </main>
 
   <nav class="bottom-nav" aria-label="ناوبری اصلی">
-    <button class="nav-item active" data-view="homeView"><b>⌂</b>خانه</button>
-    <button class="nav-item" data-view="calendarView"><b>▦</b>تقویم</button>
-    <button class="nav-item" data-view="moodView"><b>♡</b>حال من</button>
-    <button class="nav-item" data-view="settingsView"><b>⚙</b>تنظیمات</button>
-    <button class="nav-item" data-view="aboutView"><b>ⓘ</b>درباره ما</button>
+    <button class="nav-item active" data-view="homeView"><span class="mi">home</span>خانه</button>
+    <button class="nav-item" data-view="calendarView"><span class="mi">calendar_month</span>تقویم</button>
+    <button class="nav-item" data-view="moodView"><span class="mi">mood</span>حال من</button>
+    <button class="nav-item" data-view="settingsView"><span class="mi">tune</span>تنظیمات</button>
+    <button class="nav-item" data-view="aboutView"><span class="mi">info</span>درباره ما</button>
   </nav>
 </div>
 
@@ -399,8 +419,18 @@
   $('cancelDatePicker').onclick=closeDatePicker;
   $('datePickerModal').addEventListener('click',e=>{if(e.target===$('datePickerModal'))closeDatePicker()});
 
+  function renderMonthChips(){
+    const box=$('monthChips');if(!box)return;box.innerHTML='';
+    const current=jalaliMonthStart(fullMonth);
+    for(let i=2;i>=0;i--){
+      const d=shiftJalaliMonth(jalaliMonthStart(now),-i);
+      const b=document.createElement('button');b.className='month-chip'+(jalaliParts(d).year===jalaliParts(current).year&&jalaliParts(d).month===jalaliParts(current).month?' active':'');
+      b.textContent=jalaliMonths[jalaliParts(d).month-1];b.onclick=()=>{fullMonth=d;renderCalendar('fullDays','fullMonthTitle',fullMonth);renderMonthChips()};box.appendChild(b);
+    }
+  }
   function renderCalendar(containerId,titleId,month){
     $(titleId).textContent=jalaliMonthTitle(month);
+    if(containerId==='fullDays')renderMonthChips();
     const container=$(containerId);container.innerHTML='';
     const first=jalaliMonthStart(month);
     const offset=(first.getDay()+1)%7;
@@ -427,7 +457,6 @@
   function resetAll(){if(confirm('همه اطلاعات ماهک از این دستگاه حذف بشه؟ این کار قابل برگشت نیست.')){localStorage.removeItem(STORAGE_KEY);state={...defaultState};saveState();toast('اطلاعات حذف شد.')}}
 
   document.querySelectorAll('.nav-item').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
-  $('settingsShortcut').onclick=()=>showView('settingsView');
   $('goCalendar').onclick=()=>showView('calendarView');$('goMood').onclick=()=>showView('moodView');
   $('quickMood').onclick=()=>showView('moodView');$('quickSymptom').onclick=()=>showView('moodView');
   $('quickPeriod').onclick=$('logPeriodHero').onclick=$('calendarLog').onclick=openPeriodModal;
@@ -438,9 +467,36 @@
   $('cancelPeriod').onclick=closePeriodModal;$('savePeriod').onclick=savePeriod;
   $('periodModal').addEventListener('click',e=>{if(e.target===$('periodModal'))closePeriodModal()});
   $('saveSettings').onclick=()=>{state.lastPeriod=$('lastPeriod').value;state.cycleLength=Number($('cycleLength').value);state.periodLength=Number($('periodLength').value);state.reminderDays=Number($('reminderDays').value);saveState();toast('تنظیمات ذخیره شد.')};
-  document.querySelectorAll('[data-mood]').forEach(b=>b.onclick=()=>{selectedMood=b.dataset.mood;document.querySelectorAll('[data-mood]').forEach(x=>x.classList.toggle('selected',x===b))});
-  document.querySelectorAll('[data-symptom]').forEach(b=>b.onclick=()=>{const s=b.dataset.symptom;if(selectedSymptoms.has(s))selectedSymptoms.delete(s);else selectedSymptoms.add(s);b.classList.toggle('selected',selectedSymptoms.has(s))});
-  $('saveMood').onclick=()=>{state.logs=state.logs||{};state.logs[todayISO]={mood:selectedMood,symptoms:[...selectedSymptoms],note:$('moodNote').value};saveState();toast('حال امروزت ذخیره شد ♡')};
+  document.querySelectorAll('[data-mood]').forEach(b=>b.onclick=()=>{selectedMood=b.dataset.mood;document.querySelectorAll('[data-mood]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b))});updateMoodInsight()});
+  document.querySelectorAll('[data-symptom]').forEach(b=>b.onclick=()=>{const s=b.dataset.symptom;if(selectedSymptoms.has(s))selectedSymptoms.delete(s);else selectedSymptoms.add(s);b.classList.toggle('selected',selectedSymptoms.has(s));b.setAttribute('aria-pressed',String(selectedSymptoms.has(s)));updateMoodInsight()});
+  function updateMoodInsight(){
+    const box=$('moodInsight');if(!box)return;
+    const moodText={
+      'خوب':['چه خوب که امروز حال بهتری داری 🌷','این حس خوب رو با یک کار کوچیک که دوستش داری جشن بگیر.'],
+      'آرام':['آرامش تو ارزشمنده؛ چند لحظه در همین حس بمون 🌿','چند نفس آهسته بکش و برای خودت یک استراحت کوتاه کنار بگذار.'],
+      'حساس':['حساس بودن یعنی امروز شاید به مهربانی بیشتری نیاز داری 🩷','با خودت نرم‌تر باش؛ کمی فاصله از شلوغی و حرف زدن با یک آدم امن می‌تونه کمک‌کننده باشه.'],
+      'خسته':['لازم نیست امروز همه‌چیز رو کامل انجام بدی ☁️','اگر می‌تونی کارها رو سبک‌تر کن، آب بنوش و چند دقیقه استراحت کن.'],
+      'گرفته':['قرار نیست هر روز قوی و سرحال باشی؛ این حس هم حق توئه 💜','یک قدم کوچک بردار: کمی هوای تازه، موسیقی آرام یا نوشتن احساساتت.'],
+      'پرانرژی':['چه انرژی قشنگی! ✨','از این حال برای یک کار دوست‌داشتنی استفاده کن و بین کارها به خودت فرصت استراحت بده.']
+    };
+    const symptomTips={
+      'دل‌درد':'گرمای ملایم روی شکم و استراحت ممکنه آرامش‌بخش باشه.',
+      'نفخ':'آب کافی و کمی قدم‌زدن آرام رو امتحان کن.',
+      'سردرد':'کمی در محیط آرام استراحت کن و آب بنوش.',
+      'حساسیت سینه':'لباس راحت و حمایتی انتخاب کن.',
+      'خستگی':'امروز به خودت اجازه استراحت بیشتری بده.',
+      'جوش':'با پوستت ملایم رفتار کن و از دست‌کاری جوش‌ها پرهیز کن.'
+    };
+    if(!selectedMood&&!selectedSymptoms.size){box.querySelector('strong').textContent='پیام ماهک برای تو';box.querySelector('p').textContent='حس‌ها و علائمت رو انتخاب کن تا یک پیام دلگرم‌کننده و پیشنهاد کوچکی برای امروزت بگیری.';return}
+    let title,tip;
+    if(selectedMood&&moodText[selectedMood]){[title,tip]=moodText[selectedMood]}else{title='بدنت داره باهات حرف می‌زنه؛ با مهربانی بهش گوش بده 💗';tip='چند دقیقه به خودت فرصت بده و ببین چه چیزی حالت رو بهتر می‌کنه.'}
+    const tips=[...selectedSymptoms].map(s=>symptomTips[s]).filter(Boolean);
+    box.querySelector('strong').textContent=title;
+    box.querySelector('p').innerHTML='';
+    const main=document.createElement('span');main.textContent=tip;box.querySelector('p').appendChild(main);
+    if(tips.length){const extra=document.createElement('span');extra.className='suggestion';extra.textContent='پیشنهاد ماهک: '+tips.slice(0,2).join(' ');box.querySelector('p').appendChild(extra)}
+  }
+  $('saveMood').onclick=()=>{state.logs=state.logs||{};state.logs[todayISO]={mood:selectedMood,symptoms:[...selectedSymptoms],note:$('moodNote').value};saveState();updateMoodInsight();toast('حال امروزت ذخیره شد ♡')};
   $('exportData').onclick=downloadJSON;$('importButton').onclick=()=>$('importFile').click();
   $('importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!obj||typeof obj!=='object')throw Error();state={...defaultState,...obj};saveState();toast('نسخه پشتیبان بازیابی شد.')}catch(err){toast('فایل معتبر نیست.')}e.target.value=''};
   $('deleteData').onclick=resetAll;
