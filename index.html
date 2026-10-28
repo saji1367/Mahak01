@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#76558f">
+  <meta name="description" content="ماهک؛ دستیار شخصی و خصوصی برای پیگیری چرخه قاعدگی">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ماهک">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <title>ماهک | دستیار چرخه تو</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+    :root {
+      color-scheme: light;
+      --bg:#f8f5fa; --surface:#fff; --ink:#2d2634; --muted:#82798b;
+      --primary:#76558f; --primary-dark:#604277; --lavender:#eee6f4;
+      --pink:#f7e4e8; --pink-ink:#a9536b; --green:#e6f1e8; --green-ink:#477554;
+      --line:#eee8f1; --shadow:0 12px 32px rgba(74,48,91,.08);
+      --field-bg:#fff; --nav-bg:#ffffffed; --icon-bg:#fff;
+      --radius:24px;
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg:#17131c; --surface:#241e2b; --ink:#f4edf8; --muted:#b9adbf;
+      --primary:#c3a2dc; --primary-dark:#e0c9f1; --lavender:#392b45;
+      --pink:#482a36; --pink-ink:#ffc0d0; --green:#243d31; --green-ink:#b8e3c2;
+      --line:#403447; --shadow:0 12px 32px rgba(0,0,0,.24);
+      --field-bg:#211a27; --nav-bg:rgba(36,30,43,.94); --icon-bg:#241e2b;
+    }
+    *{box-sizing:border-box}
+    html{background:var(--bg); scroll-behavior:smooth}
+    body{margin:0;font-family:"Vazirmatn",Tahoma,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:480px;margin:0 auto;min-height:100dvh;background:var(--bg);padding:0 18px 105px;position:relative}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 2px 16px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand-mark{width:42px;height:42px;border-radius:15px;background:linear-gradient(145deg,#9273a9,#6c4c83);display:grid;place-items:center;color:#fff;font-size:23px;box-shadow:0 7px 18px #76558f33}
+    .brand-name{font-size:20px;font-weight:800;letter-spacing:-.4px}
+    .brand-sub{font-size:11px;color:var(--muted);margin-top:-5px}
+    .icon-btn{border:1px solid var(--line);background:var(--surface);border-radius:15px;width:42px;height:42px;display:grid;place-items:center;color:var(--primary);font-size:19px}
+    .greeting{font-size:13px;color:var(--muted);margin:5px 2px 3px}
+    h1{font-size:25px;line-height:1.45;margin:0 2px 18px;font-weight:800;letter-spacing:-.5px}
+    .hero{position:relative;overflow:hidden;background:linear-gradient(145deg,#806096,#684a80);color:white;border-radius:28px;padding:23px 22px 20px;box-shadow:0 16px 34px #76558f30}
+    .hero:before{content:"";position:absolute;width:190px;height:190px;border:1px solid #ffffff26;border-radius:50%;left:-64px;top:-85px}
+    .hero:after{content:"";position:absolute;width:135px;height:135px;border:1px solid #ffffff1c;border-radius:50%;left:-36px;top:-58px}
+    .hero-label{font-size:13px;color:#f0e8f5}
+    .hero-count{font-size:46px;line-height:1.25;font-weight:800;margin:8px 0 0;letter-spacing:-1px}
+    .hero-count small{font-size:17px;font-weight:500;letter-spacing:0}
+    .hero-date{font-size:13px;color:#eee4f3;margin-top:7px}
+    .hero-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:21px;padding-top:15px;border-top:1px solid #ffffff29;font-size:12px;color:#f3eaf7}
+    .hero-action{border:0;background:var(--surface);color:var(--primary-dark);font-weight:700;font-size:12px;border-radius:13px;padding:9px 12px;white-space:nowrap}
+    .section-head{display:flex;align-items:center;justify-content:space-between;margin:24px 2px 12px}
+    .section-head h2{font-size:16px;margin:0;font-weight:800}
+    .text-link{border:0;background:none;color:var(--primary);font-size:12px;font-weight:700;padding:5px}
+    .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .quick{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px 8px 12px;text-align:center;min-height:110px;box-shadow:0 5px 18px #4a305b05}
+    .quick-icon{width:42px;height:42px;border-radius:15px;margin:0 auto 7px;display:grid;place-items:center;font-size:20px}
+    .quick strong{display:block;font-size:12px;font-weight:700}
+    .quick span{font-size:10px;color:var(--muted)}
+    .q-lav{background:var(--lavender)} .q-pink{background:var(--pink)} .q-green{background:var(--green)}
+    .calendar-card,.note-card,.settings-card{background:var(--surface);border:1px solid var(--line);border-radius:23px;padding:17px;box-shadow:0 5px 18px #4a305b05}
+    .calendar-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .calendar-top strong{font-size:14px}
+    .month-nav{display:flex;gap:7px}
+    .month-nav button{border:1px solid var(--line);background:var(--surface);color:var(--primary);border-radius:10px;width:31px;height:31px;font-size:17px}
+    .weekdays,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
+    .weekdays span{font-size:10px;color:var(--muted);padding:4px 0 8px}
+    .day{border:0;background:transparent;border-radius:11px;aspect-ratio:1/1;display:grid;place-items:center;font-size:12px;color:var(--ink);position:relative}
+    .day.empty{pointer-events:none}
+    .day.period{background:var(--pink);color:var(--pink-ink);font-weight:800}
+    .day.predicted{background:var(--lavender);color:var(--primary);font-weight:700}
+    .day.today{outline:1.5px solid var(--primary);outline-offset:-2px}
+    .day.selected{box-shadow:inset 0 0 0 2px var(--primary)}
+    .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:10px;color:var(--muted)}
+    .legend span{display:flex;align-items:center;gap:5px}
+    .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+    .note-card{display:flex;align-items:flex-start;gap:12px}
+    .note-icon{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:var(--pink);color:#b65d75;flex-shrink:0;font-size:20px}
+    .note-card strong{font-size:13px;display:block;margin-bottom:2px}
+    .note-card p{font-size:11px;color:var(--muted);margin:0}
+    .bottom-nav{position:fixed;z-index:5;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);padding:10px 17px calc(10px + env(safe-area-inset-bottom));background:var(--surface)fffed;backdrop-filter:blur(18px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+    .nav-item{border:0;background:transparent;color:#9a91a1;border-radius:15px;padding:7px 2px 5px;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px}
+    .nav-item b{font-size:20px;line-height:1.3;font-weight:500}
+    .nav-item.active{color:var(--primary);background:var(--lavender);font-weight:800}
+    .view{display:none}.view.active{display:block}
+    .page-title{font-size:23px;font-weight:800;margin:9px 0 4px}
+    .page-intro{font-size:12px;color:var(--muted);margin:0 0 18px}
+    .field{margin:14px 0}
+    .field label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}
+    .field input,.field select,.field textarea{width:100%;border:1px solid #e7dfea;background:var(--surface);border-radius:14px;padding:12px 13px;color:var(--ink);outline:none}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px #76558f17}
+    .btn{width:100%;border:0;border-radius:15px;padding:13px 16px;background:var(--primary);color:#fff;font-weight:800;box-shadow:0 8px 18px #76558f26}
+    .btn.secondary{background:var(--lavender);color:var(--primary);box-shadow:none}
+    .btn.danger{background:var(--surface)0f0;color:#ad4040;box-shadow:none}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:9px 12px;font-size:12px;color:var(--muted)}
+    .chip.selected{border-color:#b59bc7;background:#f2eaf7;color:var(--primary);font-weight:700}
+    .mood-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .mood{border:1px solid var(--line);background:var(--surface);border-radius:17px;padding:13px 5px;text-align:center;font-size:12px;color:var(--ink)}
+    .mood span{display:block;font-size:23px;margin-bottom:4px}
+    .mood.selected{background:var(--lavender);border-color:#bda9cb;color:var(--primary)}
+    .small-muted{font-size:10px;color:var(--muted)}
+    .empty-state{text-align:center;padding:24px 12px;color:var(--muted);font-size:12px}
+    .toast{position:fixed;z-index:10;bottom:95px;left:50%;transform:translateX(-50%);background:#30263a;color:#fff;border-radius:13px;padding:10px 16px;font-size:12px;box-shadow:var(--shadow);display:none;max-width:90%;text-align:center}
+    .privacy-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);font-size:12px}
+    .switch{accent-color:var(--primary);width:18px;height:18px}
+    .modal-backdrop{position:fixed;z-index:8;inset:0;background:#21152b66;display:none;align-items:flex-end;justify-content:center;padding:12px}
+    .modal-backdrop.open{display:flex}
+    .modal{background:var(--bg);border-radius:25px 25px 18px 18px;padding:22px;width:min(480px,100%);max-height:90dvh;overflow:auto}
+    .modal h3{margin:0 0 4px;font-size:19px}
+    .modal p{margin:0 0 15px;font-size:12px;color:var(--muted)}
+    .modal-actions{display:flex;gap:9px;margin-top:15px}
+    .modal-actions .btn{flex:1}
+    @media(min-width:520px){body{padding:20px 0}.app{border-radius:30px;overflow:hidden;min-height:calc(100dvh - 40px);box-shadow:0 20px 60px #38254412}.bottom-nav{bottom:20px;border-radius:0 0 30px 30px}}
+    @media(prefers-reduced-motion:no-preference){.quick,.btn,.day{transition:transform .12s ease,background .12s ease}.quick:active,.btn:active{transform:scale(.98)}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">☾</div><div><div class="brand-name">ماهک</div><div class="brand-sub">دستیار چرخه تو</div></div></div>
+    <button class="icon-btn" id="settingsShortcut" aria-label="تنظیمات">⚙</button>
+  </header>
+
+  <main>
+    <section class="view active" id="homeView">
+      <div class="greeting" id="todayGreeting">سلام، روزت بخیر 🌷</div>
+      <h1>حواست به خودت باشه</h1>
+      <div class="hero">
+        <div class="hero-label" id="heroLabel">تا پریود احتمالی بعدی</div>
+        <div class="hero-count" id="heroCount">— <small>روز</small></div>
+        <div class="hero-date" id="heroDate">برای شروع، آخرین پریودت رو ثبت کن</div>
+        <div class="hero-bottom"><span id="cycleInfo">هر چرخه، فرصتی برای شناخت بیشتر خودت</span><button class="hero-action" id="logPeriodHero">ثبت پریود +</button></div>
+      </div>
+
+      <div class="section-head"><h2>ثبت سریع امروز</h2><button class="text-link" id="goMood">حال امروز من ←</button></div>
+      <div class="quick-grid">
+        <button class="quick" id="quickPeriod"><div class="quick-icon q-pink">🩸</div><strong>پریود</strong><span>شروع یا پایان</span></button>
+        <button class="quick" id="quickMood"><div class="quick-icon q-lav">♡</div><strong>حال روحی</strong><span>حست رو ثبت کن</span></button>
+        <button class="quick" id="quickSymptom"><div class="quick-icon q-green">✧</div><strong>علائم</strong><span>بدن امروزت</span></button>
+      </div>
+
+      <div class="section-head"><h2>تقویم چرخه</h2><button class="text-link" id="goCalendar">مشاهده تقویم ←</button></div>
+      <div class="calendar-card">
+        <div class="calendar-top"><strong id="homeMonthTitle">مهر ۱۴۰۵</strong><div class="month-nav"><button id="homePrev" aria-label="ماه قبل">‹</button><button id="homeNext" aria-label="ماه بعد">›</button></div></div>
+        <div class="weekdays"><span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span></div>
+        <div class="days" id="homeDays"></div>
+        <div class="legend"><span><i class="dot" style="background:#e9a9b7"></i>ثبت‌شده</span><span><i class="dot" style="background:#c9b4dc"></i>پیش‌بینی</span><span><i class="dot" style="border:1px solid #76558f"></i>امروز</span></div>
+      </div>
+
+      <div class="section-head"><h2>یادآوری مهربون</h2></div>
+      <div class="note-card"><div class="note-icon">♡</div><div><strong>لازم نیست همه‌چیز رو به خاطر بسپری</strong><p>ماهک کمک می‌کنه الگوی چرخه‌ات رو بشناسی. پیش‌بینی‌ها تقریبی هستن و ممکنه تغییر کنن.</p></div></div>
+    </section>
+
+    <section class="view" id="calendarView">
+      <div class="page-title">تقویم من</div><p class="page-intro">روزهای ثبت‌شده و پیش‌بینی چرخه‌ات رو ببین.</p>
+      <div class="calendar-card">
+        <div class="calendar-top"><strong id="fullMonthTitle"></strong><div class="month-nav"><button id="fullPrev" aria-label="ماه قبل">‹</button><button id="fullNext" aria-label="ماه بعد">›</button></div></div>
+        <div class="weekdays"><span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span></div>
+        <div class="days" id="fullDays"></div>
+        <div class="legend"><span><i class="dot" style="background:#e9a9b7"></i>پریود ثبت‌شده</span><span><i class="dot" style="background:#c9b4dc"></i>پریود احتمالی</span></div>
+      </div>
+      <div class="section-head"><h2>ثبت جدید</h2></div>
+      <button class="btn" id="calendarLog">ثبت شروع پریود</button>
+      <p class="small-muted" style="margin-top:12px">پیش‌بینی چرخه، ابزار تقریبی برای پیگیری شخصی است و کاربرد تشخیصی یا پیشگیری از بارداری ندارد.</p>
+    </section>
+
+    <section class="view" id="moodView">
+      <div class="page-title">حال امروز من</div><p class="page-intro">چند ثانیه برای خودت وقت بذار. ثبت‌کردن اختیاریه.</p>
+      <div class="settings-card">
+        <div class="field"><label>امروز بیشتر چه حسی داری؟</label>
+          <div class="mood-grid" id="moodChoices">
+            <button class="mood" data-mood="خوب"><span>😊</span>خوب</button>
+            <button class="mood" data-mood="آرام"><span>😌</span>آرام</button>
+            <button class="mood" data-mood="حساس"><span>🥹</span>حساس</button>
+            <button class="mood" data-mood="خسته"><span>😴</span>خسته</button>
+            <button class="mood" data-mood="گرفته"><span>🌧️</span>گرفته</button>
+            <button class="mood" data-mood="پرانرژی"><span>✨</span>پرانرژی</button>
+          </div>
+        </div>
+        <div class="field"><label>علائم امروز (هرکدوم خواستی)</label>
+          <div class="chips" id="symptomChoices">
+            <button class="chip" data-symptom="دل‌درد">دل‌درد</button><button class="chip" data-symptom="نفخ">نفخ</button><button class="chip" data-symptom="سردرد">سردرد</button><button class="chip" data-symptom="حساسیت سینه">حساسیت سینه</button><button class="chip" data-symptom="خستگی">خستگی</button><button class="chip" data-symptom="جوش">جوش</button>
+          </div>
+        </div>
+        <div class="field"><label for="moodNote">یادداشت (اختیاری)</label><textarea id="moodNote" rows="3" placeholder="هر چیزی که دوست داری برای خودت ثبت کنی…"></textarea></div>
+        <button class="btn" id="saveMood">ذخیره حال امروز</button>
+      </div>
+      <div class="section-head"><h2>یادآوری</h2></div>
+      <div class="note-card"><div class="note-icon">✦</div><div><strong>بدنت رو با بدن خودت مقایسه کن</strong><p>تغییرات خلق‌وخو و علائم از فردی به فرد دیگه متفاوته. ثبت‌ها برای شناخت الگوی شخصی خودته.</p></div></div>
+    </section>
+
+    <section class="view" id="settingsView">
+      <div class="page-title">تنظیمات</div><p class="page-intro">ماهک رو با نیازهای خودت هماهنگ کن.</p>
+      <div class="settings-card">
+        <div class="field"><label for="lastPeriodDisplay">اولین روز آخرین پریود (شمسی)</label><input id="lastPeriodDisplay" type="text" inputmode="none" placeholder="انتخاب تاریخ شمسی" readonly><input id="lastPeriod" type="hidden"></div>
+        <div class="field"><label for="cycleLength">طول معمول چرخه (روز)</label><select id="cycleLength"></select></div>
+        <div class="field"><label for="periodLength">مدت معمول پریود (روز)</label><select id="periodLength"></select></div>
+        <div class="field"><label for="reminderDays">یادآوری قبل از تاریخ احتمالی</label><select id="reminderDays"><option value="0">خاموش</option><option value="1">یک روز قبل</option><option value="3">سه روز قبل</option><option value="5">پنج روز قبل</option></select></div>
+        <div class="privacy-row"><span>حالت تاریک</span><label style="display:flex;align-items:center;gap:8px"><span class="small-muted" id="themeLabel">روشن</span><input class="switch" type="checkbox" id="themeToggle" aria-label="فعال‌سازی حالت تاریک"></label></div>
+        <div class="privacy-row"><span>قفل صفحه (در نسخه وب به‌صورت نمایشی)</span><input class="switch" type="checkbox" id="privacyToggle" disabled aria-label="قفل صفحه"></div>
+        <p class="small-muted">قفل زیستی به قابلیت‌های بومی نیاز دارد؛ در این نسخه فعال نیست.</p>
+        <button class="btn" id="saveSettings">ذخیره تنظیمات</button>
+      </div>
+      <div class="section-head"><h2>اطلاعات و حریم خصوصی</h2></div>
+      <div class="settings-card">
+        <p style="font-size:12px;margin-top:0">اطلاعات این نسخه روی همین مرورگر و دستگاه ذخیره می‌شه. با پاک‌کردن داده‌های مرورگر ممکنه اطلاعات از بین بره؛ برای همین امکان خروجی گرفتن هم گذاشته شده.</p>
+        <button class="btn secondary" id="exportData">دریافت نسخه پشتیبان</button>
+        <div style="height:9px"></div>
+        <button class="btn secondary" id="importButton">بازیابی نسخه پشتیبان</button><input type="file" id="importFile" accept="application/json" hidden>
+        <div style="height:9px"></div><button class="btn danger" id="deleteData">حذف همه اطلاعات</button>
+      </div>
+      <footer class="app-footer" style="text-align:center;margin:28px 0 12px;padding:18px 8px 8px;border-top:1px solid var(--line)">
+        <div class="small-muted">طراحی و توسعه داده شده توسط سجاد درویشی · نسخه ۱.۰۱</div>
+        <a href="https://www.sajaddarvishi.ir" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:5px;color:var(--primary);font-size:11px;text-decoration:none">www.sajaddarvishi.ir</a>
+      </footer>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="ناوبری اصلی">
+    <button class="nav-item active" data-view="homeView"><b>⌂</b>خانه</button>
+    <button class="nav-item" data-view="calendarView"><b>▦</b>تقویم</button>
+    <button class="nav-item" data-view="moodView"><b>♡</b>حال من</button>
+    <button class="nav-item" data-view="settingsView"><b>⚙</b>تنظیمات</button>
+  </nav>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="modal-backdrop" id="periodModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <h3 id="modalTitle">ثبت پریود</h3><p>اولین روز خونریزی رو انتخاب کن. این اطلاعات فقط روی همین دستگاه ذخیره می‌شه.</p>
+    <div class="field"><label for="periodStartDisplay">تاریخ شروع (شمسی)</label><input id="periodStartDisplay" type="text" inputmode="none" placeholder="انتخاب تاریخ شمسی" readonly><input id="periodStart" type="hidden"></div>
+    <div class="field"><label for="periodEndDisplay">تاریخ پایان (اختیاری، شمسی)</label><input id="periodEndDisplay" type="text" inputmode="none" placeholder="انتخاب تاریخ شمسی" readonly><input id="periodEnd" type="hidden"></div>
+    <div class="modal-actions"><button class="btn secondary" id="cancelPeriod">انصراف</button><button class="btn" id="savePeriod">ذخیره</button></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="datePickerModal" role="dialog" aria-modal="true" aria-labelledby="datePickerTitle">
+  <div class="modal">
+    <h3 id="datePickerTitle">انتخاب تاریخ شمسی</h3>
+    <div class="calendar-card" style="margin-top:14px">
+      <div class="calendar-top"><strong id="pickerMonthTitle"></strong><div class="month-nav"><button id="pickerPrev" aria-label="ماه قبل">‹</button><button id="pickerNext" aria-label="ماه بعد">›</button></div></div>
+      <div class="weekdays"><span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span></div>
+      <div class="days" id="pickerDays"></div>
+    </div>
+    <div class="modal-actions"><button class="btn secondary" id="cancelDatePicker">انصراف</button></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const STORAGE_KEY = 'maahak-v1';
+  const now = new Date(); now.setHours(12,0,0,0);
+  const todayISO = iso(now);
+  const defaultState = {lastPeriod:'', cycleLength:28, periodLength:5, reminderDays:3, periods:[], logs:{}};
+  let state = loadState();
+  let homeMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  let fullMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  let selectedMood = '';
+  let selectedSymptoms = new Set();
+
+  function iso(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+  function parseISO(s){if(!s)return null; const [y,m,d]=s.split('-').map(Number);const x=new Date(y,m-1,d,12);return isNaN(x)?null:x}
+  function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+  function diffDays(a,b){return Math.round((a-b)/86400000)}
+  function loadState(){try{return {...defaultState,...JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}}catch(e){return {...defaultState}}}
+  function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state)); render()}
+  function faNum(v){return String(v).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d])}
+  function faDate(d,opts={day:'numeric',month:'long',year:'numeric'}){return new Intl.DateTimeFormat('fa-IR-u-ca-persian-nu-latn',opts).format(d).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d])}
+  function faMonth(d){return new Intl.DateTimeFormat('fa-IR-u-ca-persian-nu-latn',{month:'long',year:'numeric'}).format(d).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d])}
+  function isSameDay(a,b){return !!a&&!!b&&iso(a)===iso(b)}
+  function recordedStarts(){const list=(state.periods||[]).map(p=>parseISO(p.start)).filter(Boolean);if(state.lastPeriod&&!list.some(d=>iso(d)===state.lastPeriod))list.push(parseISO(state.lastPeriod));return list.sort((a,b)=>a-b)}
+  function predictedStarts(){const starts=recordedStarts();if(!starts.length)return [];let anchor=starts[starts.length-1];let out=[];for(let i=0;i<4;i++){anchor=addDays(anchor,Number(state.cycleLength)||28);out.push(anchor)}return out}
+  function statusForDay(d){const starts=recordedStarts();for(const p of state.periods||[]){const s=parseISO(p.start),e=parseISO(p.end)||addDays(s,(Number(state.periodLength)||5)-1);if(s&&d>=s&&d<=e)return 'period'}if(!state.periods.length&&state.lastPeriod){const s=parseISO(state.lastPeriod),e=addDays(s,(Number(state.periodLength)||5)-1);if(d>=s&&d<=e)return 'period'}else if(state.lastPeriod){const s=parseISO(state.lastPeriod),e=addDays(s,(Number(state.periodLength)||5)-1);if(d>=s&&d<=e)return 'period'}
+    for(const p of predictedStarts()){const e=addDays(p,(Number(state.periodLength)||5)-1);if(d>=p&&d<=e)return 'predicted'}return ''}
+
+  // Theme preference is stored locally and follows the user's choice.
+  function applyTheme(theme){
+    document.documentElement.dataset.theme = theme;
+    const toggle = $('themeToggle');
+    if(toggle) toggle.checked = theme === 'dark';
+    const label = $('themeLabel');
+    if(label) label.textContent = theme === 'dark' ? 'تاریک' : 'روشن';
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if(meta) meta.content = theme === 'dark' ? '#17131c' : '#76558f';
+  }
+  function savedTheme(){try{return localStorage.getItem('maahak-theme') || 'light'}catch(e){return 'light'}}
+  applyTheme(savedTheme());
+  $('themeToggle').addEventListener('change', e=>{
+    const theme = e.target.checked ? 'dark' : 'light';
+    try{localStorage.setItem('maahak-theme',theme)}catch(err){}
+    applyTheme(theme);
+  });
+
+  const jalaliMonths = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+  const jalaliWeekdays = ['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
+  function jalaliParts(date){
+    const parts = new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn',{year:'numeric',month:'numeric',day:'numeric'}).formatToParts(date);
+    const get = t => Number(parts.find(p=>p.type===t)?.value || 0);
+    return {year:get('year'),month:get('month'),day:get('day')};
+  }
+  function jalaliMonthTitle(date){const p=jalaliParts(date);return `${jalaliMonths[p.month-1]} ${faNum(p.year)}`}
+  function jalaliMonthStart(date){const p=jalaliParts(date);let d=new Date(date);while(jalaliParts(d).day!==1)d=addDays(d,-1);return d}
+  function shiftJalaliMonth(date,delta){let d=jalaliMonthStart(date);const p=jalaliParts(d);const targetMonth=p.month-1+delta;const y=p.year+Math.floor(targetMonth/12);const m=((targetMonth%12)+12)%12+1;let guess=new Date(d);for(let i=0;i<40;i++){const q=jalaliParts(guess);if(q.year===y&&q.month===m&&q.day===1)return guess;guess=addDays(guess,q.year<y||(q.year===y&&q.month<m)?1:-1)}return d}
+  let pickerTarget = null;
+  let pickerMonth = jalaliMonthStart(now);
+  function openDatePicker(targetId){
+    pickerTarget=targetId;
+    const current = parseISO($(targetId).value) || now;
+    pickerMonth=jalaliMonthStart(current);
+    renderPicker();
+    $('datePickerModal').classList.add('open');
+  }
+  function closeDatePicker(){$('datePickerModal').classList.remove('open')}
+  function renderPicker(){
+    $('pickerMonthTitle').textContent=jalaliMonthTitle(pickerMonth);
+    const box=$('pickerDays');box.innerHTML='';
+    const first=jalaliMonthStart(pickerMonth);
+    const offset=(first.getDay()+1)%7;
+    for(let i=0;i<offset;i++){const blank=document.createElement('span');blank.className='day empty';box.appendChild(blank)}
+    const p=jalaliParts(first);
+    const next=shiftJalaliMonth(first,1);
+    const days=Math.round((next-first)/86400000);
+    for(let i=0;i<days;i++){
+      const d=addDays(first,i),b=document.createElement('button');
+      b.className='day';b.textContent=faNum(jalaliParts(d).day);
+      if(isSameDay(d,now))b.classList.add('today');
+      b.title=faDate(d);
+      b.onclick=()=>{
+        $(pickerTarget).value=iso(d);
+        const displayId=pickerTarget+'Display';
+        if($(displayId))$(displayId).value=faDate(d);
+        closeDatePicker();
+      };
+      box.appendChild(b);
+    }
+  }
+  ['lastPeriodDisplay','periodStartDisplay','periodEndDisplay'].forEach(id=>$(id).addEventListener('click',()=>openDatePicker(id.replace('Display',''))));
+  $('pickerPrev').onclick=()=>{pickerMonth=shiftJalaliMonth(pickerMonth,-1);renderPicker()};
+  $('pickerNext').onclick=()=>{pickerMonth=shiftJalaliMonth(pickerMonth,1);renderPicker()};
+  $('cancelDatePicker').onclick=closeDatePicker;
+  $('datePickerModal').addEventListener('click',e=>{if(e.target===$('datePickerModal'))closeDatePicker()});
+
+  function renderCalendar(containerId,titleId,month){
+    $(titleId).textContent=jalaliMonthTitle(month);
+    const container=$(containerId);container.innerHTML='';
+    const first=jalaliMonthStart(month);
+    const offset=(first.getDay()+1)%7;
+    for(let i=0;i<offset;i++){const b=document.createElement('span');b.className='day empty';container.appendChild(b)}
+    const next=shiftJalaliMonth(first,1);
+    const count=Math.round((next-first)/86400000);
+    for(let i=0;i<count;i++){
+      const d=addDays(first,i);
+      const b=document.createElement('button');b.className='day';b.textContent=faNum(jalaliParts(d).day);
+      const st=statusForDay(d);if(st)b.classList.add(st);if(isSameDay(d,now))b.classList.add('today');
+      b.title=faDate(d);b.addEventListener('click',()=>{ $('periodStart').value=iso(d);$('periodStartDisplay').value=faDate(d);$('periodEnd').value='';$('periodEndDisplay').value='';openPeriodModal() });
+      container.appendChild(b);
+    }
+  }
+  function renderHome(){const starts=recordedStarts();$('todayGreeting').textContent=`امروز ${faDate(now,{weekday:'long',day:'numeric',month:'long'})} ـه 🌷`;const next=predictedStarts()[0];if(!starts.length){$('heroLabel').textContent='شروع مسیر شناخت چرخه';$('heroCount').innerHTML='سلام <small>به ماهک</small>';$('heroDate').textContent='تاریخ شروع آخرین پریودت رو ثبت کن';$('cycleInfo').textContent='تنظیم چند مورد ساده برای شروع';}else{const diff=diffDays(next,now);$('heroLabel').textContent=diff>0?'تا پریود احتمالی بعدی':diff===0?'پریود احتمالی امروز':'از تاریخ احتمالی گذشته';$('heroCount').innerHTML=`${faNum(Math.abs(diff))} <small>${diff>0?'روز باقی‌مونده':diff===0?'تا امروز':'روز گذشته'}</small>`;$('heroDate').textContent=`حدود ${faDate(next,{day:'numeric',month:'long'})}`;$('cycleInfo').textContent=`چرخه تنظیم‌شده: ${faNum(state.cycleLength)} روز`;}renderCalendar('homeDays','homeMonthTitle',homeMonth);renderCalendar('fullDays','fullMonthTitle',fullMonth)}
+  function renderSettings(){ $('lastPeriod').value=state.lastPeriod||'';$('lastPeriodDisplay').value=state.lastPeriod?faDate(parseISO(state.lastPeriod)):'';$('cycleLength').innerHTML='';for(let i=21;i<=40;i++){const o=document.createElement('option');o.value=i;o.textContent=faNum(i)+' روز';if(i===Number(state.cycleLength))o.selected=true;$('cycleLength').appendChild(o)}$('periodLength').innerHTML='';for(let i=1;i<=10;i++){const o=document.createElement('option');o.value=i;o.textContent=faNum(i)+' روز';if(i===Number(state.periodLength))o.selected=true;$('periodLength').appendChild(o)}$('reminderDays').value=String(state.reminderDays??3)}
+  function render(){renderHome();renderSettings()}
+  function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.display='none',2800)}
+  function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='calendarView')renderCalendar('fullDays','fullMonthTitle',fullMonth)}
+  function openPeriodModal(){if(!$('periodStart').value)$('periodStart').value=todayISO;$('periodStartDisplay').value=$('periodStart').value?faDate(parseISO($('periodStart').value)):'';$('periodEndDisplay').value=$('periodEnd').value?faDate(parseISO($('periodEnd').value)):'';$('periodModal').classList.add('open')}
+  function closePeriodModal(){$('periodModal').classList.remove('open')}
+  function savePeriod(){const start=$('periodStart').value,end=$('periodEnd').value;if(!start){toast('لطفاً تاریخ شروع رو انتخاب کن.');return}if(end&&end<start){toast('تاریخ پایان نمی‌تونه قبل از شروع باشه.');return}state.periods=state.periods||[];const existing=state.periods.find(p=>p.start===start);if(existing){existing.end=end||existing.end}else state.periods.push({start,end});state.periods.sort((a,b)=>a.start.localeCompare(b.start));state.lastPeriod=start;closePeriodModal();saveState();toast('پریودت ثبت شد 🌷')}
+  function downloadJSON(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='maahak-backup.json';a.click();URL.revokeObjectURL(url);toast('نسخه پشتیبان آماده شد.')}
+  function resetAll(){if(confirm('همه اطلاعات ماهک از این دستگاه حذف بشه؟ این کار قابل برگشت نیست.')){localStorage.removeItem(STORAGE_KEY);state={...defaultState};saveState();toast('اطلاعات حذف شد.')}}
+
+  document.querySelectorAll('.nav-item').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+  $('settingsShortcut').onclick=()=>showView('settingsView');
+  $('goCalendar').onclick=()=>showView('calendarView');$('goMood').onclick=()=>showView('moodView');
+  $('quickMood').onclick=()=>showView('moodView');$('quickSymptom').onclick=()=>showView('moodView');
+  $('quickPeriod').onclick=$('logPeriodHero').onclick=$('calendarLog').onclick=openPeriodModal;
+  $('homePrev').onclick=()=>{homeMonth=shiftJalaliMonth(homeMonth,-1);renderCalendar('homeDays','homeMonthTitle',homeMonth)};
+  $('homeNext').onclick=()=>{homeMonth=shiftJalaliMonth(homeMonth,1);renderCalendar('homeDays','homeMonthTitle',homeMonth)};
+  $('fullPrev').onclick=()=>{fullMonth=shiftJalaliMonth(fullMonth,-1);renderCalendar('fullDays','fullMonthTitle',fullMonth)};
+  $('fullNext').onclick=()=>{fullMonth=shiftJalaliMonth(fullMonth,1);renderCalendar('fullDays','fullMonthTitle',fullMonth)};
+  $('cancelPeriod').onclick=closePeriodModal;$('savePeriod').onclick=savePeriod;
+  $('periodModal').addEventListener('click',e=>{if(e.target===$('periodModal'))closePeriodModal()});
+  $('saveSettings').onclick=()=>{state.lastPeriod=$('lastPeriod').value;state.cycleLength=Number($('cycleLength').value);state.periodLength=Number($('periodLength').value);state.reminderDays=Number($('reminderDays').value);saveState();toast('تنظیمات ذخیره شد.')};
+  document.querySelectorAll('[data-mood]').forEach(b=>b.onclick=()=>{selectedMood=b.dataset.mood;document.querySelectorAll('[data-mood]').forEach(x=>x.classList.toggle('selected',x===b))});
+  document.querySelectorAll('[data-symptom]').forEach(b=>b.onclick=()=>{const s=b.dataset.symptom;if(selectedSymptoms.has(s))selectedSymptoms.delete(s);else selectedSymptoms.add(s);b.classList.toggle('selected',selectedSymptoms.has(s))});
+  $('saveMood').onclick=()=>{state.logs=state.logs||{};state.logs[todayISO]={mood:selectedMood,symptoms:[...selectedSymptoms],note:$('moodNote').value};saveState();toast('حال امروزت ذخیره شد ♡')};
+  $('exportData').onclick=downloadJSON;$('importButton').onclick=()=>$('importFile').click();
+  $('importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!obj||typeof obj!=='object')throw Error();state={...defaultState,...obj};saveState();toast('نسخه پشتیبان بازیابی شد.')}catch(err){toast('فایل معتبر نیست.')}e.target.value=''};
+  $('deleteData').onclick=resetAll;
+  $('periodStart').value=todayISO;$('periodStartDisplay').value=faDate(now);
+  render();
+  if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+  let deferredPrompt=null;
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;const b=document.createElement('button');b.className='btn secondary';b.style.marginTop='12px';b.textContent='نصب ماهک روی گوشی';b.onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;b.remove()}};const hero=$('homeView').querySelector('.hero');hero.after(b)});
+})();
+</script>
+</body>
+</html>
