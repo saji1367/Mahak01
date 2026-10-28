@@ -203,7 +203,7 @@
     .nav-item b{display:grid;place-items:center;min-height:26px}
     .note-card{padding:15px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(135deg,var(--surface),var(--lavender))}
     .about-card{background:radial-gradient(circle at 50% 0%,var(--lavender),var(--surface) 65%);overflow:hidden}
-    .about-mark{width:76px;height:76px;border-radius:25px;font-size:0}
+    .about-mark{width:76px;height:76px;border-radius:0;margin:0 auto 12px;display:grid;place-items:center;background:transparent;box-shadow:none;overflow:hidden}.about-mark img{width:100%;height:100%;display:block;object-fit:contain}
     @media(prefers-reduced-motion:no-preference){.hero{animation:hero-arrive .55s ease both}.view.active .settings-card,.view.active .about-card{animation:card-arrive .28s ease both}.mood:hover{transform:translateY(-2px)}@keyframes hero-arrive{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@keyframes card-arrive{from{opacity:.65;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}}
     @media(min-width:520px){body{padding:20px 0}.app{border-radius:30px;overflow:hidden;min-height:calc(100dvh - 40px);box-shadow:0 20px 60px #38254412}.bottom-nav{bottom:20px;border-radius:0 0 30px 30px}}
     @media(prefers-reduced-motion:no-preference){.quick,.btn,.day{transition:transform .12s ease,background .12s ease}.quick:active,.btn:active{transform:scale(.98)}}
@@ -323,7 +323,7 @@
       <div class="page-title">درباره ماهک</div>
       <p class="page-intro">ماهک، همراهی برای شناخت بهتر چرخه و توجه به حال خودت.</p>
       <div class="about-card">
-        <div class="about-mark" aria-label="نشان ماهک"><svg viewBox="0 0 64 64" width="44" height="44" aria-hidden="true"><path d="M43 7a23 23 0 1 0 14 39A25 25 0 0 1 43 7Z" fill="none" stroke="white" stroke-width="4" stroke-linecap="round"/><path d="M20 48c2-12 11-19 21-20-1 11-7 19-21 20Z" fill="#d9f3e8"/><path d="M20 48c5-7 10-12 17-16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="49" cy="15" r="3" fill="#ffe5a8"/></svg></div>
+        <div class="about-mark" aria-label="لوگوی ماهک"><img src="icon-192.png" alt="لوگوی ماهک"></div>
         <h2>ماهک | دستیار چرخه تو</h2>
         <p>طراحی و توسعه داده شده با سجاد درویشی</p>
         <a class="about-link" href="https://www.SajadDarvishi.ir" target="_blank" rel="noopener noreferrer">www.SajadDarvishi.ir</a>
