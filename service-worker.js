@@ -1,4 +1,4 @@
-const CACHE_NAME = 'maahak-v1.15';
+const CACHE_NAME = 'maahak-v1.16';
 const APP_SHELL = [
   './',
   './index.html',
