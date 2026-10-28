@@ -1,1 +1,1 @@
-maahak-v1.05
+maahak-v1.06
